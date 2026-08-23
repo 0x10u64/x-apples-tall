@@ -1,0 +1,20 @@
+[package]
+name = "x-apples-tall"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8.9"
+tokio = "1.53.1"
+tower = "0.5.3"
+tower-http = { version = "0.7.0", features = ["fs"] }
+vercel_runtime = { version = "2.4.0", features = ["axum"] }
+
+[[bin]]
+name = "axum"
+path = "api/axum.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3

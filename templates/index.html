@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>x apples tall</title>
+    <link href="/css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>x apples tall</h1>
+
+    <label for="fileInput" id="fileInputLabel">drop a file to measure</label>
+    <input type="file" id="fileInput" name="fileInput" accept="image/*" />
+
+    <p id="error"></p>
+
+    <main>
+      <img id="image" />
+      <div id="apples" />
+    </main>
+
+    <p id="result-subtext"></p>
+    <h1 id="result"></h1>
+
+    <script src="/js/index.js"></script>
+  </body>
+</html>
