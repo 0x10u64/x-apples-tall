@@ -5,5 +5,10 @@
 			"source": "/(.*)",
 			"destination": "/api/axum"
 		}
-	]
+	],
+	"functions": {
+		"api/axum.rs": {
+			"includeFiles": "templates/*"
+		}
+	}
 }
