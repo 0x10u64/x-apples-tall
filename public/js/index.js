@@ -1,59 +1,71 @@
+const els = {
+    input: document.getElementById("fileInput"),
+    image: document.getElementById("image"),
+    apples: document.getElementById("apples"),
+    error: document.getElementById("error"),
+    result: document.getElementById("result"),
+    resultSubtext: document.getElementById("result-subtext"),
+};
+
+let currentObjectUrl = null;
+
 async function getImageDimensions(file) {
     try {
         const bitmap = await createImageBitmap(file);
         const { width, height } = bitmap;
         bitmap.close();
         return { width, height };
-    } catch (e) {
+    } catch {
         throw new Error("could not decode!! (file may be corrupted or unsupported)");
     }
 }
 
-document.getElementById("fileInput").addEventListener("change", async (e) => {
+async function handleFile(file) {
+    els.apples.style.display = "none";
+    els.error.textContent = "";
+    els.result.textContent = "";
+    els.resultSubtext.textContent = "";
+
+    if (!file.type.startsWith("image/")) {
+        throw new Error("that's not an image!!");
+    }
+
+    if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl = URL.createObjectURL(file);
+    els.image.src = currentObjectUrl;
+
+    const { width, height } = await getImageDimensions(file);
+    if (height === 0) throw new Error("image has zero height and you can't do that");
+
+    const aspectRatio = width / height;
+    if (aspectRatio > 1) throw new Error("your image is not tall enough!!");
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const appleUnit = `${els.image.clientHeight * aspectRatio}px`;
+            els.apples.style.display = "block";
+            els.apples.style.width = appleUnit;
+            els.apples.style.height = `${els.image.clientHeight}px`;
+            els.apples.style.backgroundSize = `${appleUnit} ${appleUnit}`;
+
+            const apples = Math.ceil(height / width - 0.5);
+            const plural = apples > 1 ? "s" : "";
+            els.result.textContent = `${apples} apple${plural} tall`;
+            els.resultSubtext.textContent = "x-apples-tall.0x10u64.vercel.app";
+        });
+    });
+}
+
+els.input.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const imageElement = document.getElementById("image");
-    imageElement.src = URL.createObjectURL(file);
-
-    const applesElement = document.getElementById("apples");
-    applesElement.style.display = "none";
-
-    const errorElement = document.getElementById("error");
-    errorElement.textContent = "";
-
-    const resultElement = document.getElementById("result");
-    resultElement.textContent = "";
-
-    const resultSubtextElement = document.getElementById("result-subtext");
-    resultSubtextElement.textContent = "";
-
+    els.input.disabled = true;
     try {
-        const { width, height } = await getImageDimensions(file);
-        if (height == 0) throw new Error("image has zero height and you can't do that bc I said so");
-        const aspectRatio = width / height;
-
-        if (aspectRatio > 1) {
-            throw new Error("your image is not tall enough!!");
-        }
-
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                applesElement.style.display = "block";
-
-                const appleUnit = `${imageElement.clientHeight * aspectRatio}px`;
-                applesElement.style.width = appleUnit;
-                applesElement.style.height = `${imageElement.clientHeight}px`;
-                applesElement.style.backgroundSize = `${appleUnit} ${appleUnit}`
-
-                const apples = Math.ceil(height / width - 0.5);
-                const plural = apples > 1 ? "s" : "";
-                resultElement.textContent = `${apples} apple${plural} tall`;
-                resultSubtextElement.textContent = "x-apples-tall.0x10u64.vercel.app";
-            });
-        });
+        await handleFile(file);
     } catch (error) {
-        errorElement.textContent = `failed to measure!! ${error.message}`;
+        els.error.textContent = `failed to measure!! ${error.message}`;
+    } finally {
+        els.input.disabled = false;
     }
 });
-

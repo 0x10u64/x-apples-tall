@@ -54,7 +54,10 @@ input#fileInput {
   display: none;
 }
 
+a,
 label#fileInputLabel {
+  color: #000000;
+  text-decoration: none;
   padding: 0.25rem;
   background: linear-gradient(#000000, #000000);
   background-repeat: no-repeat;
@@ -63,11 +66,13 @@ label#fileInputLabel {
   transition: 250ms ease;
 }
 
+a:hover,
 label#fileInputLabel:hover {
   color: #ffffff;
   background-size: 100% 100%;
 }
 
+a:active,
 label#fileInputLabel:active {
   color: #808080;
 }
