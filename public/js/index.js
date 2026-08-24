@@ -51,7 +51,7 @@ async function handleFile(file) {
             const apples = Math.ceil(height / width - 0.5);
             const plural = apples > 1 ? "s" : "";
             els.result.textContent = `${apples} apple${plural} tall`;
-            els.resultSubtext.textContent = "x-apples-tall.0x10u64.vercel.app";
+            els.resultSubtext.textContent = "x-apples-tall.ext.io";
         });
     });
 }
