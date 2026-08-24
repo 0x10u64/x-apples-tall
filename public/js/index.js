@@ -16,8 +16,17 @@ document.getElementById("fileInput").addEventListener("change", async (e) => {
     const imageElement = document.getElementById("image");
     imageElement.src = URL.createObjectURL(file);
 
+    const applesElement = document.getElementById("apples");
+    applesElement.style.display = "none";
+
     const errorElement = document.getElementById("error");
     errorElement.textContent = "";
+
+    const resultElement = document.getElementById("result");
+    resultElement.textContent = "";
+
+    const resultSubtextElement = document.getElementById("result-subtext");
+    resultSubtextElement.textContent = "";
 
     try {
         const { width, height } = await getImageDimensions(file);
@@ -29,18 +38,19 @@ document.getElementById("fileInput").addEventListener("change", async (e) => {
         }
 
         requestAnimationFrame(() => {
-            const applesElement = document.getElementById("apples");
+            requestAnimationFrame(() => {
+                applesElement.style.display = "block";
 
-            const appleUnit = `${imageElement.clientHeight * aspectRatio}px`;
-            applesElement.style.width = appleUnit;
-            applesElement.style.height = `${imageElement.clientHeight}px`;
-            applesElement.style.backgroundSize = `${appleUnit} ${appleUnit}`
+                const appleUnit = `${imageElement.clientHeight * aspectRatio}px`;
+                applesElement.style.width = appleUnit;
+                applesElement.style.height = `${imageElement.clientHeight}px`;
+                applesElement.style.backgroundSize = `${appleUnit} ${appleUnit}`
 
-            const apples = Math.ceil(height / width - 0.5);
-            const plural = apples > 1 ? "s" : "";
-            document.getElementById("result").textContent = `${apples} apple${plural} tall`;
-
-            document.getElementById("result-subtext").textContent = "x-apples-tall.0x10u64.vercel.app";
+                const apples = Math.ceil(height / width - 0.5);
+                const plural = apples > 1 ? "s" : "";
+                resultElement.textContent = `${apples} apple${plural} tall`;
+                resultSubtextElement.textContent = "x-apples-tall.0x10u64.vercel.app";
+            });
         });
     } catch (error) {
         errorElement.textContent = `failed to measure!! ${error.message}`;
